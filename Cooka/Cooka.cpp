@@ -2,14 +2,13 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <map>
 #include <string>
 #include "Recipe.h"
 using namespace std;
 
 void ReadFile(vector<Recipe>& recipes) {
 
-    ifstream inFile("Test_recipes.csv"); // creates stream to read from file
+    ifstream inFile("RAW_recipes.csv"); // creates stream to read from file
 
     if (!inFile.is_open()) { // if file does not open
         cout << "RAW_recipes.csv did not open." << endl;
@@ -42,18 +41,23 @@ void ReadFile(vector<Recipe>& recipes) {
             getline(stream, steps, ']');
             getline(stream, temp, ',');
             getline(stream, temp, ',');
-            numIngredients = stoi(temp);
-            getline(stream, temp, '\'');
-            for (int i = 0; i < numIngredients; i++) {
-                getline(stream, ingredient, '\'');
-                /*if(ingredients.find(ingredient) == ingredients.end()) {
-                  ingredients[ingredient] = i;
-                }*/
-                ingredients.push_back(ingredient);
+            try {
+                numIngredients = stoi(temp);
                 getline(stream, temp, '\'');
+                for (int i = 0; i < numIngredients; i++) {
+                    getline(stream, ingredient, '\'');
+                    /*if(ingredients.find(ingredient) == ingredients.end()) {
+                      ingredients[ingredient] = i;
+                    }*/
+                    ingredients.push_back(ingredient);
+                    getline(stream, temp, '\'');
+                }
+                Recipe r(name, minutes, numSteps, steps, numIngredients, ingredients);
+                recipes.push_back(r);
             }
-            Recipe r(name, minutes, numSteps, steps, numIngredients, ingredients);
-            recipes.push_back(r);
+            catch(exception& e) {
+
+            }
         }
     }
 }
@@ -63,10 +67,15 @@ void CheckIngredient(string ingredient, vector<Recipe>& recipes) {
         vector<string> rIngredients = recipes.at(i).GetIngredients();
         for (int j = 0; j < rIngredients.size(); j++) {
             if (rIngredients.at(j).find(ingredient) != string::npos) {
-                recipes.at(i).IncrementCount();
-                int recipeCount = recipes.at(i).GetCount();
+                recipes.at(i).SetCount(recipes.at(i).GetCount() + 1);
             }
         }
+    }
+}
+
+void ResetCount(vector<Recipe>& recipes) {
+    for (int i = 0; i < recipes.size(); i++) {
+        recipes[i].SetCount(0);
     }
 }
 
@@ -151,21 +160,11 @@ int main()
             cout << "How many ingredients are you entering? ";
             cin >> numIngredients;
             for (int i = 0; i < numIngredients; i++) {
-                cout << "Ingredient " << i + 1 << ": ";
+                cout << "Ingredient " << i+1 << ": ";
                 cin >> ingredient;
                 CheckIngredient(ingredient, recipes);
             }
-        }
-        cout << recipes.size() << " results" << endl;
-        cout << "Select sorting algorithm: " << endl;
-        cout << "1. Shell Sort" << endl;
-        cout << "2. Merge Sort" << endl;
-        cin >> userInput;
-        if (userInput == 2) {
-            mergeSort(recipes, 0, recipes.size() - 1);
-            for (int i = 0; i < recipes.size(); i++) {
-                cout << recipes.at(i).GetName() << ": " << recipes.at(i).GetCount() << endl;
-            }
+            cout << recipes[0].GetName() << ": " << recipes[0].GetCount() << endl;
         }
     }
 }
