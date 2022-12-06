@@ -3,12 +3,14 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 #include "Recipe.h"
 using namespace std;
 
 void ReadFile(vector<Recipe>& recipes) {
 
-    ifstream inFile("RAW_recipes.csv"); // creates stream to read from file
+    ifstream inFile("Test_recipes.csv"); // creates stream to read from file
 
     if (!inFile.is_open()) { // if file does not open
         cout << "RAW_recipes.csv did not open." << endl;
@@ -79,8 +81,9 @@ void ResetCount(vector<Recipe>& recipes) {
     }
 }
 
+
 int Partition(vector<Recipe>& recipes, int low, int high) {
-    /*int pivot = recipes[low].GetCount();
+    int pivot = recipes[low].GetCount();
     int up = low;
     int down = high;
     while (up < down) {
@@ -95,32 +98,30 @@ int Partition(vector<Recipe>& recipes, int low, int high) {
             down--;
         }
         if (up < down) {
-            Recipe temp = recipes[up];
-            recipes[up] = recipes[down];
-            recipes[down] = temp;
+            swap(recipes[up], recipes[down]);
         }
-        Recipe temp = recipes[low];
-        recipes[low] = recipes[down];
-        recipes[down] = temp;
-        return down;
-    }*/
+        swap(recipes[low], recipes[down]);
 
-    Recipe pivot = recipes[high];
-    int i = low - 1;
-    for (int j = low; j < high; j++) {
-        if (recipes[j].GetCount() <= pivot.GetCount()) {
-            i++;
-            Recipe temp = recipes[i];
-            recipes[i] = recipes[j];
-            recipes[j] = temp;
-        }
+        return down;
     }
-    Recipe temp = recipes[i + 1];
-    recipes[i + 1] = recipes[high];
-    recipes[high] = temp;
-    return (i + 1);
+
+    //Recipe pivot = recipes[high];
+    //int i = low - 1;
+    //for (int j = low; j < high; j++) {
+    //    if (recipes[j].GetCount() <= pivot.GetCount()) {
+    //        i++;
+    //        Recipe temp = recipes[i];
+    //        recipes[i] = recipes[j];
+    //        recipes[j] = temp;
+    //    }
+    //}
+    //Recipe temp = recipes[i + 1];
+    //recipes[i + 1] = recipes[high];
+    //recipes[high] = temp;
+    //return (i + 1);
 }
 
+// quick sort and partition code from discussion slides
 void QuickSort(vector<Recipe>& recipes, int low, int high) {
     if (low < high) {
         int pi = Partition(recipes, low, high);
@@ -186,14 +187,14 @@ void merge(vector<Recipe>& recipes, int left, int mid, int right) {
 }
 
 // mergeSort and merge code from lecture module 6 - sorting
-void mergeSort(vector<Recipe>& recipes, int left, int right)
+void MergeSort(vector<Recipe>& recipes, int left, int right)
 {
     if (left < right)
     {
         // m is the point where the array is divided into two subarrays
         int mid = left + (right - left) / 2;
-        mergeSort(recipes, left, mid);
-        mergeSort(recipes, mid + 1, right);
+        MergeSort(recipes, left, mid);
+        MergeSort(recipes, mid + 1, right);
         // Merge the sorted subarrays
         merge(recipes, left, mid, right);
     }
@@ -202,6 +203,8 @@ void mergeSort(vector<Recipe>& recipes, int left, int right)
 int main()
 {
     vector<Recipe> recipes;
+    /* initialize random seed: */
+    srand(time(NULL));
 
     // ask how many ingredients will be entered
     // for each ingredient entered, iterate over every recipe to check if the recipe uses the ingredient
@@ -226,29 +229,28 @@ int main()
                 cin >> ingredient;
                 CheckIngredient(ingredient, recipes);
             }
-            /*for (int i = 0; i < recipes.size(); i++) {
-                cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
-            }*/
             int sort = 0;
             cout << "\n1. Shell Sort" << endl;
             cout << "2. Merge Sort" << endl;
             cin >> sort;
             if (sort == 1) {
                 //vector<int> test = {4, 6, 7, 5, 8, 9};
-                vector<Recipe> test;
-                for (int i = 0; i < 100; i++) {
-                    test.push_back(recipes[i]);
+                for (int i = 0; i < recipes.size(); i++) {
+                    QuickSort(recipes, 0, recipes.size() - 1);
                 }
-                QuickSort(test, 0, test.size() - 1);
-                for (int i = 0; i < test.size(); i++) {
+                for (int i = 0; i < 20; i++) {
+                    cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
+                }
+            }
+            else if (sort == 2) {
+                MergeSort(recipes, 0, recipes.size() - 1);
+
+                for (int i = 0; i < 20; i++) {
                     cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
                     //cout << test[i] << endl;
                 }
-                /*for (int i = 0; i < test.size(); i++) {
-                    cout << test[i] << endl;
-                }*/
             }
-            ResetCount(recipes);
+            //ResetCount(recipes);
         }
     }
 }
