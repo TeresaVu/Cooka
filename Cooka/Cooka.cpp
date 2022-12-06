@@ -79,50 +79,63 @@ void ResetCount(vector<Recipe>& recipes) {
     }
 }
 
-int Partition(vector<Recipe>& recipes, int low, int high) {
-    int pivot = recipes[high].GetCount();
-    int up = low;
-    int down = high;
-    while (up < down) {
-        for (int j = up; j < high; j++) {
-            if (recipes[up].GetCount() > pivot)
-                break;
-            up++;
+// Merge two subarrays from arr
+void merge(vector<Recipe>& recipes, int left, int mid, int right)
+{
+    // Create X -> recipes[left..mid] & Y -> recipes[mid+1..right]
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    vector<Recipe> X(n1), Y(n2);
+    for (int i = 0; i < n1; i++)
+        X[i] = recipes[left + i];
+    for (int j = 0; j < n2; j++)
+        Y[j] = recipes[mid + 1 + j];
+    // Merge the arrays X and Y into recipes vector
+    int i, j, k;
+    i = 0;
+    j = 0;
+    k = left;
+    while (i < n1 && j < n2)
+    {
+        if (X[i].GetCount() >= Y[j].GetCount())
+        {
+            recipes[k] = X[i];
+            i++;
         }
-        for (int j = high; j > low; j--) {
-            if (recipes[down].GetCount() < pivot)
-                break;
-            down--;
+        else
+        {
+            recipes[k] = Y[j];
+            j++;
         }
-        if (up < down) {
-            Recipe temp = recipes[up];
-            recipes[up] = recipes[down];
-            recipes[down] = temp;
-        }
-        Recipe temp = recipes[low];
-        recipes[low] = recipes[down];
-        recipes[down] = temp;
-        return down;
+        k++;
+    }
+    // When we run out of elements in either X or Y append the remaining elements
+    while (i < n1)
+    {
+        recipes[k] = X[i];
+        i++;
+        k++;
+    }
+    while (j < n2)
+    {
+        recipes[k] = Y[j];
+        j++;
+        k++;
     }
 }
 
-void QuickSort(vector<Recipe>& recipes, int low, int high) {
-    if (low < high) {
-        int pi = Partition(recipes, low, high);
-        QuickSort(recipes, low, pi - 1);
-        QuickSort(recipes, pi + 1, high);
+// mergeSort and merge code from lecture module 6 - sorting
+void mergeSort(vector<Recipe>& recipes, int left, int right)
+{
+    if (left < right)
+    {
+        // m is the point where the array is divided into two subarrays
+        int mid = left + (right - left) / 2;
+        mergeSort(recipes, left, mid);
+        mergeSort(recipes, mid + 1, right);
+        // Merge the sorted subarrays
+        merge(recipes, left, mid, right);
     }
-    /*int n = recipes.size();
-    for (int gap = n / 2; gap > 0; gap /= 2) {
-        for (int i = gap; i < n; i++) {
-            Recipe temp = recipes[i];
-            int j;
-            for (j = i; j >= gap && recipes[j - gap].GetCount() < temp.GetCount(); j-= gap) {
-                recipes[j] = recipes[j - gap];
-            }
-            recipes[j] = temp;
-        }
-    }*/
 }
 
 int main()
@@ -144,31 +157,14 @@ int main()
         if (userInput == 1) {
             string ingredient;
             int numIngredients = 0;
-            cout << "\nHow many ingredients are you entering? ";
+            cout << "How many ingredients are you entering? ";
             cin >> numIngredients;
             for (int i = 0; i < numIngredients; i++) {
                 cout << "Ingredient " << i+1 << ": ";
                 cin >> ingredient;
                 CheckIngredient(ingredient, recipes);
             }
-            /*for (int i = 0; i < recipes.size(); i++) {
-                cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
-            }*/
-            int sort = 0;
-            cout << "\n1. Shell Sort" << endl;
-            cout << "2. Merge Sort" << endl;
-            cin >> sort;
-            if (sort == 1) {
-                //vector<int> test = {4, 6, 7, 5, 8, 9};
-                QuickSort(recipes, 0, recipes.size() - 1);
-                for (int i = 0; i < 100; i++) {
-                    cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
-                }
-                /*for (int i = 0; i < test.size(); i++) {
-                    cout << test[i] << endl;
-                }*/
-            }
-            ResetCount(recipes);
+            cout << recipes[0].GetName() << ": " << recipes[0].GetCount() << endl;
         }
     }
 }
