@@ -79,6 +79,52 @@ void ResetCount(vector<Recipe>& recipes) {
     }
 }
 
+int Partition(vector<Recipe>& recipes, int low, int high) {
+    int pivot = recipes[high].GetCount();
+    int up = low;
+    int down = high;
+    while (up < down) {
+        for (int j = up; j < high; j++) {
+            if (recipes[up].GetCount() > pivot)
+                break;
+            up++;
+        }
+        for (int j = high; j > low; j--) {
+            if (recipes[down].GetCount() < pivot)
+                break;
+            down--;
+        }
+        if (up < down) {
+            Recipe temp = recipes[up];
+            recipes[up] = recipes[down];
+            recipes[down] = temp;
+        }
+        Recipe temp = recipes[low];
+        recipes[low] = recipes[down];
+        recipes[down] = temp;
+        return down;
+    }
+}
+
+void QuickSort(vector<Recipe>& recipes, int low, int high) {
+    if (low < high) {
+        int pi = Partition(recipes, low, high);
+        QuickSort(recipes, low, pi - 1);
+        QuickSort(recipes, pi + 1, high);
+    }
+    /*int n = recipes.size();
+    for (int gap = n / 2; gap > 0; gap /= 2) {
+        for (int i = gap; i < n; i++) {
+            Recipe temp = recipes[i];
+            int j;
+            for (j = i; j >= gap && recipes[j - gap].GetCount() < temp.GetCount(); j-= gap) {
+                recipes[j] = recipes[j - gap];
+            }
+            recipes[j] = temp;
+        }
+    }*/
+}
+
 int main()
 {
     vector<Recipe> recipes;
@@ -98,15 +144,29 @@ int main()
         if (userInput == 1) {
             string ingredient;
             int numIngredients = 0;
-            cout << "How many ingredients are you entering? ";
+            cout << "\nHow many ingredients are you entering? ";
             cin >> numIngredients;
             for (int i = 0; i < numIngredients; i++) {
                 cout << "Ingredient " << i+1 << ": ";
                 cin >> ingredient;
                 CheckIngredient(ingredient, recipes);
             }
-            for (int i = 0; i < recipes.size(); i++) {
+            /*for (int i = 0; i < recipes.size(); i++) {
                 cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
+            }*/
+            int sort = 0;
+            cout << "\n1. Shell Sort" << endl;
+            cout << "2. Merge Sort" << endl;
+            cin >> sort;
+            if (sort == 1) {
+                //vector<int> test = {4, 6, 7, 5, 8, 9};
+                QuickSort(recipes, 0, recipes.size() - 1);
+                for (int i = 0; i < 100; i++) {
+                    cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
+                }
+                /*for (int i = 0; i < test.size(); i++) {
+                    cout << test[i] << endl;
+                }*/
             }
             ResetCount(recipes);
         }
