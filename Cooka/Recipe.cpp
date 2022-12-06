@@ -18,6 +18,21 @@ Recipe::Recipe(string name, int minutes, int numSteps, string steps, int numIngr
 	this->count = 0;
 };
 
+Recipe& Recipe::operator=(const Recipe& rhs) {
+    if (this != &rhs) {
+        this->name = rhs.name;
+        this->minutes = rhs.minutes;
+        this->numSteps = rhs.numSteps;
+        this->steps = rhs.steps;
+        for (int i = 0; i < rhs.ingredients.size(); i++) {
+            this->ingredients.at(i) = rhs.ingredients.at(i);
+        }
+        this->numIngredients = rhs.numIngredients;
+        this->count = rhs.count;
+    }
+    return *this;
+}
+
 void Recipe::PrintIngredients() {
 	// for (auto it = ingredients.begin(); it != ingredients.end(); it++) {
 	//   cout << it->first << endl;
