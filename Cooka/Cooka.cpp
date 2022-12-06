@@ -79,9 +79,54 @@ void ResetCount(vector<Recipe>& recipes) {
     }
 }
 
+int Partition(vector<Recipe>& recipes, int low, int high) {
+    int pivot = recipes[low].GetCount();
+    int up = low;
+    int down = high;
+    while (up < down) {
+        for (int j = up; j < high; j++) {
+            if (recipes[up].GetCount() > pivot)
+                break;
+            up++;
+        }
+        for (int j = high; j > low; j--) {
+            if (recipes[down].GetCount() < pivot)
+                break;
+            down--;
+        }
+        if (up < down) {
+            Recipe temp = recipes[up];
+            recipes[up] = recipes[down];
+            recipes[down] = temp;
+        }
+        Recipe temp = recipes[low];
+        recipes[low] = recipes[down];
+        recipes[down] = temp;
+        return down;
+    }
+}
+
+void QuickSort(vector<Recipe>& recipes, int low, int high) {
+    if (low < high) {
+        int pi = Partition(recipes, low, high);
+        QuickSort(recipes, low, pi - 1);
+        QuickSort(recipes, pi + 1, high);
+    }
+}
+    /*int n = recipes.size();
+    for (int gap = n / 2; gap > 0; gap /= 2) {
+        for (int i = gap; i < n; i++) {
+            Recipe temp = recipes[i];
+            int j;
+            for (j = i; j >= gap && recipes[j - gap].GetCount() < temp.GetCount(); j-= gap) {
+                recipes[j] = recipes[j - gap];
+            }
+            recipes[j] = temp;
+        }
+    }*/
+
 // Merge two subarrays from arr
-void merge(vector<Recipe>& recipes, int left, int mid, int right)
-{
+void merge(vector<Recipe>& recipes, int left, int mid, int right) {
     // Create X -> recipes[left..mid] & Y -> recipes[mid+1..right]
     int n1 = mid - left + 1;
     int n2 = right - mid;
@@ -141,7 +186,6 @@ void mergeSort(vector<Recipe>& recipes, int left, int right)
 int main()
 {
     vector<Recipe> recipes;
-    ReadFile(recipes);
 
     // ask how many ingredients will be entered
     // for each ingredient entered, iterate over every recipe to check if the recipe uses the ingredient
@@ -155,16 +199,35 @@ int main()
         cout << "2. Exit" << endl;
         cin >> userInput;
         if (userInput == 1) {
+            cout << "Loading recipes..." << endl;
+            ReadFile(recipes);
             string ingredient;
             int numIngredients = 0;
-            cout << "How many ingredients are you entering? ";
+            cout << "\nHow many ingredients are you entering? ";
             cin >> numIngredients;
             for (int i = 0; i < numIngredients; i++) {
                 cout << "Ingredient " << i+1 << ": ";
                 cin >> ingredient;
                 CheckIngredient(ingredient, recipes);
             }
-            cout << recipes[0].GetName() << ": " << recipes[0].GetCount() << endl;
+            /*for (int i = 0; i < recipes.size(); i++) {
+                cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
+            }*/
+            int sort = 0;
+            cout << "\n1. Shell Sort" << endl;
+            cout << "2. Merge Sort" << endl;
+            cin >> sort;
+            if (sort == 1) {
+                //vector<int> test = {4, 6, 7, 5, 8, 9};
+                QuickSort(recipes, 0, recipes.size() - 1);
+                for (int i = 0; i < 100; i++) {
+                    cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
+                }
+                /*for (int i = 0; i < test.size(); i++) {
+                    cout << test[i] << endl;
+                }*/
+            }
+            ResetCount(recipes);
         }
     }
 }
