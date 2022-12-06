@@ -18,6 +18,7 @@ class Recipe
 public:
 	Recipe();
 	Recipe(string name, int minutes, int numSteps, string steps, int numIngredients, vector<string>& ingredients);
+    Recipe& operator=(const Recipe& rhs);
 	void PrintIngredients();
 	string GetName();
 	int GetCount();

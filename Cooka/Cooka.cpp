@@ -80,7 +80,7 @@ void ResetCount(vector<Recipe>& recipes) {
 }
 
 int Partition(vector<Recipe>& recipes, int low, int high) {
-    int pivot = recipes[low].GetCount();
+    /*int pivot = recipes[low].GetCount();
     int up = low;
     int down = high;
     while (up < down) {
@@ -103,7 +103,22 @@ int Partition(vector<Recipe>& recipes, int low, int high) {
         recipes[low] = recipes[down];
         recipes[down] = temp;
         return down;
+    }*/
+
+    Recipe pivot = recipes[high];
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (recipes[j].GetCount() <= pivot.GetCount()) {
+            i++;
+            Recipe temp = recipes[i];
+            recipes[i] = recipes[j];
+            recipes[j] = temp;
+        }
     }
+    Recipe temp = recipes[i + 1];
+    recipes[i + 1] = recipes[high];
+    recipes[high] = temp;
+    return (i + 1);
 }
 
 void QuickSort(vector<Recipe>& recipes, int low, int high) {
@@ -112,18 +127,19 @@ void QuickSort(vector<Recipe>& recipes, int low, int high) {
         QuickSort(recipes, low, pi - 1);
         QuickSort(recipes, pi + 1, high);
     }
-}
-    /*int n = recipes.size();
+
+   /* int n = recipes.size();
     for (int gap = n / 2; gap > 0; gap /= 2) {
         for (int i = gap; i < n; i++) {
             Recipe temp = recipes[i];
             int j;
-            for (j = i; j >= gap && recipes[j - gap].GetCount() < temp.GetCount(); j-= gap) {
+            for (j = i; j >= gap && recipes[j - gap].GetCount() < temp.GetCount(); j -= gap) {
                 recipes[j] = recipes[j - gap];
             }
             recipes[j] = temp;
         }
     }*/
+}
 
 // Merge two subarrays from arr
 void merge(vector<Recipe>& recipes, int left, int mid, int right) {
@@ -219,9 +235,14 @@ int main()
             cin >> sort;
             if (sort == 1) {
                 //vector<int> test = {4, 6, 7, 5, 8, 9};
-                QuickSort(recipes, 0, recipes.size() - 1);
+                vector<Recipe> test;
                 for (int i = 0; i < 100; i++) {
+                    test.push_back(recipes[i]);
+                }
+                QuickSort(test, 0, test.size() - 1);
+                for (int i = 0; i < test.size(); i++) {
                     cout << recipes[i].GetName() << ": " << recipes[i].GetCount() << endl;
+                    //cout << test[i] << endl;
                 }
                 /*for (int i = 0; i < test.size(); i++) {
                     cout << test[i] << endl;
