@@ -183,7 +183,7 @@ void DisplayRecipes(vector<Recipe>& recipes) {
                 break;
             }
             cout << "1. Find recipe information" << endl;
-            cout << "2. Load 20 more recipes" << endl;
+            cout << "2. Load 10 more recipes" << endl;
             cout << "3. Exit" << endl;
             cout << "Selection: ";
             cin >> userInput;
@@ -197,7 +197,7 @@ void DisplayRecipes(vector<Recipe>& recipes) {
             cin >> userInput2;
             recipes[userInput2 - 1].PrintInfo();
             cout << "1. Find recipe information" << endl;
-            cout << "2. Load 20 more recipes" << endl;
+            cout << "2. Load 10 more recipes" << endl;
             cout << "3. Exit" << endl;
             cout << "Selection: ";
             cin >> userInput;
@@ -230,7 +230,7 @@ void DisplayRecipes(vector<Recipe>& recipes) {
                     break;
                 }
                 cout << "1. Find recipe information" << endl;
-                cout << "2. Load 20 more recipes" << endl;
+                cout << "2. Load 10 more recipes" << endl;
                 cout << "3. Exit" << endl;
                 cout << "Selection: ";
                 cin >> userInput;
@@ -273,7 +273,7 @@ int main()
         }
         int sort = 0;
         cout << "\nSort results by: ";
-        cout << "\n1. Shell Sort" << endl;
+        cout << "\n1. Quick Sort" << endl;
         cout << "2. Merge Sort" << endl;
         cout << "Selection: ";
         cin >> sort;
