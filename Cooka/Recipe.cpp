@@ -1,63 +1,55 @@
 #include "Recipe.h"
 
 Recipe::Recipe() {
-	name = "";
-	minutes = 0;
-	numSteps = 0;
-	numIngredients = 0;
-	count = 0;
+    name = "";
+    minutes = 0;
+    numSteps = 0;
+    numIngredients = 0;
+    count = 0;
 };
 
 Recipe::Recipe(string name, int minutes, int numSteps, string steps, int numIngredients, vector<string>& ingredients) {
-	this->name = name;
-	this->minutes = minutes;
-	this->numSteps = numSteps;
-	this->steps = steps;
-	this->numIngredients = numIngredients;
-	this->ingredients = ingredients;
-	this->count = 0;
+    this->name = name;
+    this->minutes = minutes;
+    this->numSteps = numSteps;
+    this->steps = steps;
+    steps = steps.substr(1);
+    this->numIngredients = numIngredients;
+    this->ingredients = ingredients;
+    this->count = 0;
 };
 
-Recipe& Recipe::operator=(const Recipe& rhs) {
-    if (this != &rhs) {
-        this->name = rhs.name;
-        this->minutes = rhs.minutes;
-        this->numSteps = rhs.numSteps;
-        this->steps = rhs.steps;
-        for (int i = 0; i < rhs.ingredients.size(); i++) {
-            this->ingredients.at(i) = rhs.ingredients.at(i);
-        }
-        this->numIngredients = rhs.numIngredients;
-        this->count = rhs.count;
-    }
-    return *this;
-}
-
 void Recipe::PrintIngredients() {
-	// for (auto it = ingredients.begin(); it != ingredients.end(); it++) {
-	//   cout << it->first << endl;
-	// }
-	for (int i = 0; i < ingredients.size(); i++) {
-		cout << ingredients.at(i) << endl;
-	}
+    // for (auto it = ingredients.begin(); it != ingredients.end(); it++) {
+    //   cout << it->first << endl;
+    // }
+    for (int i = 0; i < ingredients.size(); i++) {
+        cout << i + 1 << ". " << ingredients.at(i) << endl;
+    }
 };
 
 string Recipe::GetName() {
-	return name;
+    return name;
 }
 
 int Recipe::GetCount() {
-	return count;
+    return count;
 }
 
 void Recipe::SetCount(int count) {
-	this->count = count;
-}
-
-void Recipe::IncrementCount() {
-	this->count++;
+    this->count = count;
 }
 
 vector<string> Recipe::GetIngredients() {
-	return ingredients;
+    return ingredients;
+}
+
+void Recipe::PrintInfo() {
+    cout << "\nRecipe Name: " << name << endl;
+    cout << "\nCook Time: " << minutes << " minutes" << endl;
+    cout << "\nIngredients: " << endl;
+    PrintIngredients();
+    cout << "\nInstructions: " << endl;
+    cout << steps << endl;
+    cout << endl;
 }
